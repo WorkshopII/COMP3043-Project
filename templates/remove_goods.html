@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>销售管理系统</title>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="static/plugins/fontawesome-free/css/all.min.css">
+  <!-- IonIcons -->
+  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="static/dist/css/adminlte.min.css">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to to the body tag
+to get the desired effect
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-link">
+        <span class="brand-text font-weight-light">销售管理系统</span>
+      </a>
+  
+      <!-- Sidebar -->
+      <div class="sidebar">
+  
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+            <li class="nav-item">
+              <a href="../" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>主页</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="buy" class="nav-link">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  商品购买
+                </p>
+              </a>
+            </li>
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-copy"></i>
+                <p>
+                  顾客管理
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="customer" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>顾客一览</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="add_customer" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>增加新顾客</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="edit_customer" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>顾客信息更改</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="remove_customer" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>删除顾客</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item has-treeview menu-open">
+              <a href="#" class="nav-link active">
+                <i class="nav-icon fas fa-chart-pie"></i>
+                <p>
+                  商品库存管理
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="goods" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>商品一览</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="add_goods" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>增加新商品</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="edit_goods" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>商品信息更改</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="remove_goods" class="nav-link active">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>删除商品</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="history" class="nav-link">
+                <i class="nav-icon fas fa-tree"></i>
+                <p>
+                  销售历史
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="return_goods" class="nav-link">
+                <i class="nav-icon fas fa-table"></i>
+                <p>
+                  退货
+                </p>
+              </a>
+            </li>
+            <li class="nav-header">账号管理</li>
+            <li class="nav-item">
+              <a href="change_password" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  修改密码
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="logout" class="nav-link">
+                <i class="nav-icon fas fa-edit"></i>
+                <p>
+                  登出
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark">删除商品</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="../">Home</a></li>
+                <li class="breadcrumb-item active">删除商品</li>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">根据条形码删除商品（注意！此过程不可逆！）</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>条形码（必填）</label>
+                        <input type="text" class="form-control">
+                      </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">确认商品信息</button>
+                </div>
+              </form>
+            </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col-md-6 -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- REQUIRED SCRIPTS -->
+
+  <!-- jQuery -->
+  <script src="static/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE -->
+  <script src="static/dist/js/adminlte.js"></script>
+  <script>
+    $(function(){
+        var time = new Date()
+        var day = ('0' + time.getDate()).slice(-2)
+        var month = ('0' + (time.getMonth() + 1)).slice(-2)
+        var today = time.getFullYear() + '-' + month + '-' + day
+        $('#show_date').val(today) 
+    })
+</script>
+
+  <!-- OPTIONAL SCRIPTS -->
+  <script src="static/plugins/chart.js/Chart.min.js"></script>
+  <script src="static/dist/js/demo.js"></script>
+  <script src="static/dist/js/pages/dashboard3.js"></script>
+</body>
+
+</html>
