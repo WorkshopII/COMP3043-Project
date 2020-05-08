@@ -122,9 +122,8 @@ def remove_goods():
 def return_goods():
     return render_template('return_goods.html')
     
-class RegistrationForm(Form):
+class RegistrationForm(Form):   # not complete yet
     username = StringField('Username', [validators.Length(min=4, max=25)])
-    email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('New Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
@@ -153,3 +152,27 @@ def logout():
     logout_user()
     # Redirect to homepage
     return redirect('login')
+
+class DatabaseOperations():
+    # Fill in the information of your database server.
+    __db_url = 'localhost'
+    __db_username = 'root'
+    __db_password = ''
+    __db_name = 'project'
+    __db = ''
+    def __init__(self):
+        """Connect to database when the object is created."""
+        self.__db = self.db_connect()
+    def __del__(self):
+        """Disconnect from database when the object is destroyed."""
+        self.__db.close()
+    def db_connect(self):
+        self.__db = pymysql.connect(self.__db_url, self.__db_username,
+        self.__db_password, self.__db_name)
+        return self.__db
+
+    def query_template(self, parameter): # for each query, write a new function in this class
+        cursor = self.__db.cursor()
+        cursor.execute('SELECT * FROM users')
+        result = cursor.fetchone()
+        return result
