@@ -3,9 +3,10 @@ import threading
 import os
 from flask import Flask, render_template, request, redirect, flash
 from collections import deque
-from wtforms import Form, BooleanField, StringField, PasswordField, validators, DateField, RadioField, ValidationError
+from wtforms import Form, BooleanField, StringField, PasswordField, validators, DateField, RadioField, ValidationError, FileField
 import pymysql
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.datastructures import CombinedMultiDict
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -36,7 +37,7 @@ def login():
         if login_result:
             flash("成功登录！")
             # Create an object of the authorized user class.
-            admin_user = SalesAdmin('admin')
+            admin_user = SalesAdmin(form.username.data)
             # Pass the user object ot `flask-login` method `login_user()`.
             login_user(admin_user)
             # Exit this function by redirect to the next page.
@@ -50,15 +51,19 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm(request.form)
-    messages = ''
+    form = RegistrationForm(CombinedMultiDict((request.form, request.files)))
+    fileOversize = messages = ''
     if request.method == 'POST' and form.validate():
-        DatabaseOperations().register(form.username.data, form.password.data, form.gender.data, form.phone.data)
-        flash("成功注册！")
-        return redirect('./')
+        image_data = request.files['photo'].read()
+        if len(image_data)<65000:
+            DatabaseOperations().register(form.username.data, form.password.data, form.gender.data, form.phone.data, image_data)
+            flash("成功注册！")
+            return redirect('./')
+        else:
+            fileOversize = '请上传65KB以下的照片'
     else:
         messages = form.errors.items()
-    return render_template('register.html', messages=messages)
+    return render_template('register.html', messages=messages, fileOversize=fileOversize)
 
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -88,7 +93,16 @@ def buy():
 @app.route('/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    return render_template('change_password.html')
+    form = PasswordChange(request.form)
+    errors = ''
+    if request.method == 'POST' and form.validate():
+        DatabaseOperations().newpassword(form.new_password.data)
+        flash("成功修改密码！请重新登录")
+        logout()
+        return redirect('login')
+    else:
+        errors = form.errors.items()
+    return render_template('change_password.html', errors=errors)
 
 
 @app.route('/customer', methods=['GET', 'POST'])
@@ -163,7 +177,20 @@ class RegistrationForm(Form):   # not complete yet
     phone = StringField('Phone', [
         validators.DataRequired(message='请输入手机号码'),
         validators.Length(min=11,max=11,message='请输入11位手机号')
-        ])
+    ])
+    photo = FileField('Photo', [
+        validators.DataRequired(message='请上传65kb以下的照片')
+    ])
+
+class PasswordChange(Form): 
+    new_password = PasswordField('New password',[
+        validators.DataRequired(message='请输入新密码'),
+        validators.EqualTo('confirm', message='两次输入的密码必须相同'),
+        validators.Length(min=8, max=20, message='密码长度为8-20位')
+    ])
+    confirm = PasswordField('Comfirm', [
+        validators.DataRequired(message='请再次输入新密码')
+    ])
 
 class LoginForm(Form):
     username = StringField('Username')
@@ -172,12 +199,10 @@ class LoginForm(Form):
 
 class SalesAdmin(UserMixin):
     """User class for flask-login"""
-
     def __init__(self, id):
         self.id = id
-        self.name = 'admin'
-        self.password = 'admin'
-
+    def get_id(self):
+        return self.id
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -231,8 +256,13 @@ class DatabaseOperations():
         cursor.execute('SELECT * FROM user where username="%s"' % (username))
         result = cursor.fetchone()
         return result
-    def register(self, username, password, gender, phone):
-        print("'%s', '%s', '%s', '%s'" % (username, password, gender, phone))
+    def register(self, username, password, gender, phone, photo):
         cursor = self.__db.cursor()
-        cursor.execute('INSERT INTO user values ("%s", "%s", "%s", "%s")' % (username, password, gender, phone))
+        query = 'INSERT INTO user values (%s, %s, %s, %s, %s)'
+        cursor.execute(query, (username, password, gender, phone, photo,))
+        self.__db.commit()
+    def newpassword(self, password):
+        cursor = self.__db.cursor()
+        query = 'UPDATE user SET password = %s WHERE username = %s'
+        cursor.execute(query, (password, current_user.get_id()))
         self.__db.commit()
